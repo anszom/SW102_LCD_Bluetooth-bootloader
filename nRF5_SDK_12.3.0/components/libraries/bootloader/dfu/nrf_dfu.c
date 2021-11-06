@@ -146,9 +146,6 @@ uint32_t nrf_dfu_init()
 
     if(enter_bootloader_mode != 0 || !nrf_dfu_app_is_valid())
     {
-        /* Hold Power if we enter DFU */
-        nrf_gpio_pin_set(SYSTEM_POWER_HOLD__PIN);
-
         timers_init();
         scheduler_init();
 

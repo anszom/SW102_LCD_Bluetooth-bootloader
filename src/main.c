@@ -38,16 +38,16 @@ bool nrf_dfu_enter_check(void)
  */
 int main(void)
 {
-  /* TODO: After firmware update, start-up needs some seconds (~3 s) to boot into firmware.
-   * If you let the power button go during this time, firmware (or setting page?) gets corrupted and SW102 starts in DFU again.
-   */
-
   (void) NRF_LOG_INIT(NULL);
 
   nrf_gpio_cfg_input(BUTTON_M__PIN, NRF_GPIO_PIN_PULLUP);
   nrf_gpio_cfg_input(BUTTON_PWR__PIN, NRF_GPIO_PIN_NOPULL);
   nrf_gpio_cfg_output(SYSTEM_POWER_HOLD__PIN);
-  /* SYSTEM_POWER_HOLD__PIN triggers in nrf_dfu.c */
+
+  /* Hold Power immediately, otherwise bootloader processing may get interrupted if the user releases the power button too quickly.
+   * This effect is more pronounced if the firmware is small enough to trigger dual-bank DFU mode. */
+  nrf_gpio_pin_set(SYSTEM_POWER_HOLD__PIN);
+
 
   nrf_bootloader_init();
 
